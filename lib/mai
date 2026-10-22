@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+void main(){runApp(const MyApp());}
+class MyApp extends StatelessWidget{
+const MyApp({super.key});
+@override
+Widget build(BuildContext context){
+return MaterialApp(title:'امزون الجواد الشعب',debugShowCheckedModeBanner:false,home:const StoreHome());
+}
+}
+class Product{
+String name;String price;String desc;
+Product({required this.name,required this.price,required this.desc});
+}
+class StoreHome extends StatefulWidget{
+const StoreHome({super.key});
+@override
+State<StoreHome> createState()=>_StoreHomeState();
+}
+class _StoreHomeState extends State<StoreHome>{
+List<Product> products=[
+Product(name:"تيشيرت رجالي",price:"15,000 د.ع",desc:"قطن اصلي"),
+Product(name:"سماعة بلوتوث",price:"25,000 د.ع",desc:"صوت نقي"),
+Product(name:"حذاء رياضي",price:"35,000 د.ع",desc:"مريح"),
+];
+void addProduct(){
+String n="",p="",d="";
+showDialog(context:context,builder:(c)=>AlertDialog(
+title:const Text("انشر منتج جديد"),
+content:Column(mainAxisSize:MainAxisSize.min,children:[
+TextField(onChanged:(v)=>n=v,decoration:const InputDecoration(labelText:"اسم المنتج")),
+TextField(onChanged:(v)=>p=v,decoration:const InputDecoration(labelText:"السعر")),
+TextField(onChanged:(v)=>d=v,decoration:const InputDecoration(labelText:"الوصف")),
+]),
+actions:[
+ElevatedButton(onPressed:(){if(n.isNotEmpty){setState(()=>products.add(Product(name:n,price:p,desc:d)));Navigator.pop(c);}},child:const Text("نشر"))
+]
+));
+}
+@override
+Widget build(BuildContext context){
+return Scaffold(
+appBar:AppBar(title:const Text("امزون الجواد الشعب - المتجر"),centerTitle:true),
+body:Column(children:[
+Padding(padding:const EdgeInsets.all(10),child:Text("عندك ${products.length} منتج منشور - تكدر تنشر بعد",style:const TextStyle(fontWeight:FontWeight.bold))),
+Expanded(child:GridView.builder(padding:const EdgeInsets.all(10),gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2,crossAxisSpacing:10,mainAxisSpacing:10),itemCount:products.length,itemBuilder:(c,i){var pr=products[i];return Card(child:Padding(padding:const EdgeInsets.all(10),child:Column(children:[Icon(Icons.shopping_bag,size:40,color:Colors.blue),Text(pr.name,style:const TextStyle(fontWeight:FontWeight.bold)),Text(pr.desc),Spacer(),Text(pr.price,style:const TextStyle(color:Colors.green,fontWeight:FontWeight.bold))])));})),
+]),
+floatingActionButton:FloatingActionButton.extended(onPressed:addProduct,icon:const Icon(Icons.add),label:const Text("انشر منتج +")),
+);
+}
+}
